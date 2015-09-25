@@ -6,7 +6,7 @@ use SimpleXMLElement;
 /**
  * Class for encode xml string to array or object & encode array to SimpleXMLElement.
  * @package kfosoft\helpers
- * @version 1.0
+ * @version 1.0.1
  * @copyright (c) 2014-2015 KFOSoftware Team <kfosoftware@gmail.com>
  */
 class XML
