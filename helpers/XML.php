@@ -144,7 +144,7 @@ class XML
      * @param SimpleXMLElement $element xml for parse.
      * @return array data.
      */
-    private function _toArray(SimpleXMLElement $element)
+    private function _toArray(SimpleXMLElement $element, $listNodes)
     {
         $array = [];
         $attributes = (array)$element->attributes();
@@ -154,13 +154,13 @@ class XML
 
         foreach ($element->children() as $key => $child) {
             $value = (string)$child;
-            $_children = $this->_toArray($child);
+            $_children = $this->_toArray($child, $listNodes);
             $_push = ($_hasChild = (count($_children) > 0)) ? $_children : ($this->isBool($value) ? $this->toBool($value) : $value);
             if ($_hasChild && !empty($value)) {
                 $_push[] = $this->isBool($value) ? $this->toBool($value) : $value;
             }
 
-            if (($key == $this->_itemNode) || ($key == $this->_listNode)) {
+            if (($key == $this->_itemNode) || ($key == $this->_listNode) || (isset(array_flip($listNodes)[$key]))) {
                 $array[] = $_push;
             } else {
                 $array[$key] = $_push;
@@ -199,14 +199,15 @@ class XML
      * Decode xml in object or array.
      * @param string|SimpleXMLElement $xml xml for decode.
      * @param bool $asObject return as object?
+     * @param array $listNodes list nodes.
      * @return array|\stdClass
      */
-    public function decode($xml, $asObject = false)
+    public function decode($xml, $asObject = false, $listNodes = [])
     {
         /* If not instance of SimpleXMLElement create object of SimpleXMLElement */
         !($xml instanceof SimpleXMLElement) && ($xml = new SimpleXMLElement($xml));
 
-        $result = $this->_toArray($xml);
+        $result = $this->_toArray($xml, $listNodes);
 
         return $asObject ? (object)$result : $result;
     }
